@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
@@ -19,11 +19,17 @@ export class GamesFormComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit(): void {
+    const username = 'admin';
+    const password = 'pass';
+    // this.httpClient.get('http://www.brandontheisen.com/api/games')
+    const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa(username + ':' + password) });
+
     this.route.paramMap
       .subscribe(params => {
         if(params.get('id') !== null) {
           const id = +params.get('id');
-          this.httpClient.get('http://www.brandontheisen.com/api/games' + '/' + id)
+          // this.httpClient.get('http://www.brandontheisen.com/api/games' + '/' + id)
+          this.httpClient.get('http://localhost:5000/api/games' + '/' + id,{headers})
           .subscribe( response => {
             this.gameForm = this.formBuilder.group(response);            
             console.log(response);
@@ -42,10 +48,16 @@ export class GamesFormComponent implements OnInit {
   }
 
   submit() {
+    const username = 'admin';
+    const password = 'pass';
+    // this.httpClient.get('http://www.brandontheisen.com/api/games')
+    const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa(username + ':' + password) });
     if(this.postOrPut) {
       let put = this.gameForm.value;
       put.year = +put.year;
-      this.httpClient.put('http://www.brandontheisen.com/api/games', 
+      
+      // this.httpClient.put('http://www.brandontheisen.com/api/games', 
+      this.httpClient.put('http://localhost:5000/api/games', 
         put).subscribe(response => {
           console.log(response);
           // Need to add error handling if PUT fails
@@ -56,8 +68,9 @@ export class GamesFormComponent implements OnInit {
       // Http call for POST
       let post = this.gameForm.value;
       post.year = +post.year;
-      this.httpClient.post('http://www.brandontheisen.com/api/games', 
-        post).subscribe(response => {
+      // this.httpClient.post('http://www.brandontheisen.com/api/games', 
+      this.httpClient.put('http://localhost:5000/api/games',
+        post,{headers: headers}).subscribe(response => {
           console.log(response);
           // Need to add error handling if POST fails
           this.router.navigate(['/']);

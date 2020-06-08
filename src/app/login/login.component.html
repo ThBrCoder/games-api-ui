@@ -1,0 +1,15 @@
+<div id="loginElement">
+    <section class="resume-section p-3 p-lg-5 d-flex align-items-center" id="login">
+      <div class="w-100">
+        <h2 class="mb-5">Login Form</h2>
+            <form [formGroup]="loginForm">
+                <input type="text" formControlName="username"
+                    class="form-control mb-4 col-4" placeholder="Username">	
+                <input type="password" formControlName="password"
+                    class="form-control mb-4 col-4" placeholder="Password">
+            <button type="submit" class="btn btn-info col-1 mr-1" (click)="submit()">Login</button>
+            <!--a routerLink="/" class="btn btn-danger col-1">Cancel</a> -->
+		</form> 
+	</div>
+	</section>
+</div>

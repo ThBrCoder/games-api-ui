@@ -8,13 +8,15 @@ import { GamesListComponent } from './games-list/games-list.component';
 import { GamesFormComponent } from './games-list/games-form/games-form.component';
 import { HomeComponent } from './home/home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GamesListComponent,
     GamesFormComponent,
-    HomeComponent
+    HomeComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -23,10 +25,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent},
-      { path: 'games-form/:id', component: GamesFormComponent},
-      { path: 'games-form', component: GamesFormComponent},
-      /* { path: '**', component: GamesFormComponent}, */
+      { path: '', component: HomeComponent },
+      { path: 'login', component: LoginComponent },
+      { path: 'games-form/:id', component: GamesFormComponent },
+      { path: 'games-form', component: GamesFormComponent },
+      
+      /* { path: '**', component: GamesFormComponent}, */ // Page Not Found Component - Need to be implemented
     ])
   ],
   providers: [],

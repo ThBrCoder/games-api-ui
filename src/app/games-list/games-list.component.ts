@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -27,22 +27,27 @@ export class GamesListComponent implements OnInit {
   }
 
   onClickRefresh() {
-    this.httpClient.get('http://www.brandontheisen.com/api/games')
+    const username = 'admin';
+    const password = 'pass';
+    // this.httpClient.get('http://www.brandontheisen.com/api/games')
+    const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa(username + ':' + password) });
+
+    this.httpClient.get('http://localhost:5000/api/games',{headers})
     .subscribe( response => {
       // Insert logic here for error checking;
       this.games = response;
     });
   }
 
-  onClickAdd() {
-    // this.games.push({id : 7, title : 'Mischief Makers', year : 1997 });
-
-  }
-
   onClickDelete(game) {
+    const username = 'admin';
+    const password = 'pass';
+    const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa(username + ':' + password) });
+
     if(window.confirm('Are you sure you want to delete: ' + game.title)) {
-      this.httpClient.delete('http://www.brandontheisen.com/api/games' + '/' 
-        + game.id).subscribe(
+      // this.httpClient.delete('http://www.brandontheisen.com/api/games' + '/' 
+      this.httpClient.delete('http://localhost:5000/api/games' + '/' 
+        + game.id,  {headers}).subscribe(
           response => 
           {
             // console.log(response);
@@ -50,10 +55,6 @@ export class GamesListComponent implements OnInit {
           }
         );
     }
-  }
-
-  onClickUpdate() {
-
   }
 
 }
