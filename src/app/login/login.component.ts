@@ -1,3 +1,4 @@
+import { GamesService } from './../games-list/services/games.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -16,7 +17,8 @@ export class LoginComponent implements OnInit {
 
   constructor(private http : HttpClient,
     private formBuilder : FormBuilder,
-    private router : Router) { }
+    private router : Router,
+    private gamesService : GamesService) { }
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
@@ -27,17 +29,23 @@ export class LoginComponent implements OnInit {
   }
 
   submit() {
-    const url = 'http://localhost:5000/login'
-    const result = this.http.post(url, this.loginForm.value).subscribe(
+    this.gamesService.login(this.loginForm.value).subscribe(
       isValid => {
-        if(isValid) {
-          sessionStorage.setItem('token', btoa(this.loginForm.value.username 
+        console.log("Finished authenticating. Checking ...");
+        console.log(isValid);
+        // if(isValid.toString().length == 0) {
+          console.log(isValid.toString().substr(25,55));
+        if(isValid.toString().substr(25,55) !== 'Invalid authentication details') {
+            // sessionStorage.setItem('token', isValid.);
+            /*sessionStorage.setItem('token', btoa(
+            this.loginForm.value.username 
             + ':' + this.loginForm.value.password));
+              */
           this.router.navigate(['/']);
         } else {
           alert("Invalid Login. Please verify username and password.");
         }
-      }
+      }, err => alert("Invalid Login. Please verify username and password.")
     );
   }
 }

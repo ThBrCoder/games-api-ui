@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { GamesService } from './../services/games.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
@@ -14,22 +14,17 @@ export class GamesFormComponent implements OnInit {
   postOrPut: boolean; // True means PUT, False means POST
 
   constructor(private route: ActivatedRoute, 
-    private httpClient: HttpClient,
+    private gamesService: GamesService,
     private formBuilder: FormBuilder,
     private router: Router) { }
 
   ngOnInit(): void {
-    const username = 'admin';
-    const password = 'pass';
-    // this.httpClient.get('http://www.brandontheisen.com/api/games')
-    const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa(username + ':' + password) });
 
     this.route.paramMap
       .subscribe(params => {
         if(params.get('id') !== null) {
           const id = +params.get('id');
-          // this.httpClient.get('http://www.brandontheisen.com/api/games' + '/' + id)
-          this.httpClient.get('http://localhost:5000/api/games' + '/' + id,{headers})
+          this.gamesService.getGameById(id)
           .subscribe( response => {
             this.gameForm = this.formBuilder.group(response);            
             console.log(response);
@@ -48,17 +43,13 @@ export class GamesFormComponent implements OnInit {
   }
 
   submit() {
-    const username = 'admin';
-    const password = 'pass';
-    // this.httpClient.get('http://www.brandontheisen.com/api/games')
-    const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa(username + ':' + password) });
+
+    let gameForm = this.gameForm.value;
+    gameForm.year = +gameForm.year; // Convert to integer;
+
     if(this.postOrPut) {
-      let put = this.gameForm.value;
-      put.year = +put.year;
-      
-      // this.httpClient.put('http://www.brandontheisen.com/api/games', 
-      this.httpClient.put('http://localhost:5000/api/games', 
-        put).subscribe(response => {
+        this.gamesService.updateGame(gameForm)
+        .subscribe(response => {
           console.log(response);
           // Need to add error handling if PUT fails
           this.router.navigate(['/']);
@@ -66,11 +57,9 @@ export class GamesFormComponent implements OnInit {
     }
     else {
       // Http call for POST
-      let post = this.gameForm.value;
-      post.year = +post.year;
-      // this.httpClient.post('http://www.brandontheisen.com/api/games', 
-      this.httpClient.put('http://localhost:5000/api/games',
-        post,{headers: headers}).subscribe(response => {
+
+      this.gamesService.addGame(gameForm)
+        .subscribe(response => {
           console.log(response);
           // Need to add error handling if POST fails
           this.router.navigate(['/']);

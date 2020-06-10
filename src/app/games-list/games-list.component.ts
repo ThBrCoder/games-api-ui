@@ -1,3 +1,4 @@
+import { GamesService } from './services/games.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
@@ -19,7 +20,7 @@ export class GamesListComponent implements OnInit {
   games: any;
   error;
 
-  constructor(private httpClient: HttpClient) { 
+  constructor(private gamesService : GamesService) { 
   }
 
   ngOnInit(): void {
@@ -27,28 +28,22 @@ export class GamesListComponent implements OnInit {
   }
 
   onClickRefresh() {
-    const username = 'admin';
-    const password = 'pass';
-    // this.httpClient.get('http://www.brandontheisen.com/api/games')
-    const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa(username + ':' + password) });
 
-    this.httpClient.get('http://localhost:5000/api/games',{headers})
+    this.gamesService.getGames()
     .subscribe( response => {
       // Insert logic here for error checking;
       this.games = response;
     });
+
+    this.gamesService.getIsAuth().subscribe(value => console.log(value));
+
   }
 
   onClickDelete(game) {
-    const username = 'admin';
-    const password = 'pass';
-    const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa(username + ':' + password) });
 
     if(window.confirm('Are you sure you want to delete: ' + game.title)) {
-      // this.httpClient.delete('http://www.brandontheisen.com/api/games' + '/' 
-      this.httpClient.delete('http://localhost:5000/api/games' + '/' 
-        + game.id,  {headers}).subscribe(
-          response => 
+       this.gamesService.deleteGame(game.id)
+        .subscribe(response => 
           {
             // console.log(response);
             this.onClickRefresh();
