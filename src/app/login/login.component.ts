@@ -31,21 +31,26 @@ export class LoginComponent implements OnInit {
   submit() {
     this.gamesService.login(this.loginForm.value).subscribe(
       isValid => {
-        console.log("Finished authenticating. Checking ...");
-        console.log(isValid);
-        // if(isValid.toString().length == 0) {
-          console.log(isValid.toString().substr(25,55));
-        if(isValid.toString().substr(25,55) !== 'Invalid authentication details') {
-            // sessionStorage.setItem('token', isValid.);
+        // console.log("Finished authenticating. Checking ...");
+        // console.log(isValid);
+        // console.log(JSON.stringify(isValid));
+        JSON.parse(JSON.stringify(isValid), (key,value) => {
+          console.log("key: " + key + " ----value: " + value.toString());
+          if(key === 'token') {
+            sessionStorage.setItem('token', value.toString());
+            console.log('Token saved in sessionStorage ...');
+          }
+        });
+        // console.log(isValid);
+            //const tokenVal = isValid.token;
+            // sessionStorage.setItem('token', isValid.toString());
             /*sessionStorage.setItem('token', btoa(
             this.loginForm.value.username 
             + ':' + this.loginForm.value.password));
               */
           this.router.navigate(['/']);
-        } else {
-          alert("Invalid Login. Please verify username and password.");
-        }
-      }, err => alert("Invalid Login. Please verify username and password.")
+
+        }, err => alert("Invalid Login. Please verify username and password.")
     );
   }
 }

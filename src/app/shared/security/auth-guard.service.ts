@@ -3,7 +3,8 @@ import { AuthenticationService } from './../../games-list/services/authenticatio
 // import { AuthGuardService } from './auth-guard.service';
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -22,18 +23,26 @@ export class AuthGuardService implements CanActivate {
   import("@angular/router").UrlTree> | 
   Promise<boolean | 
   import("@angular/router").UrlTree> {
+    
+    return this.gamesService.getIsAuth().pipe(
+      map((res: any) => { 
+        console.log('AuthGuard result is == ' + res.tokenValidity);
+        let validity = Boolean(res.tokenValidity);
+        
+        if(validity == true) {
+          return true;
+        }
+        
+        this.router.navigate(['/login']);
+        return false; 
+      
+      }),
+      catchError((err) => {
+        this.router.navigate(['/login']);
+        return of(false);
+      })
+    );
 
-    // const isAuth = this.authService.getIsAuth(); // Need to create service which will call for token
-
-    const isAuth = this.gamesService.getIsAuth();
-
-    if(!isAuth) {
-      this.router.navigate(['/login']);
-    }
-
-    // return isAuth;
-    return true;
   }
-
 
 }

@@ -1,3 +1,4 @@
+import { AuthGuardService } from './shared/security/auth-guard.service';
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -25,11 +26,13 @@ import { LoginComponent } from './login/login.component';
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent },
       { path: 'login', component: LoginComponent },
-      { path: 'games-form/:id', component: GamesFormComponent },
-      { path: 'games-form', component: GamesFormComponent },
-      
+      { path: '', component: HomeComponent, canActivate: [AuthGuardService], 
+      children: [
+        { path: 'games-form', component: GamesFormComponent, canActivate: [AuthGuardService] },
+        { path: 'games-form/:id', component: GamesFormComponent, canActivate: [AuthGuardService] },
+      ]},
+
       /* { path: '**', component: GamesFormComponent}, */ // Page Not Found Component - Need to be implemented
     ])
   ],
